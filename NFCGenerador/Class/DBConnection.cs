@@ -11,10 +11,11 @@ namespace NFCGenerador.Class
     internal class DBConnection
     {
        // private SqlCeConnection? conn;
-        private SqlConnection conn;
+        public static SqlConnection conn;
 
         public DBConnection()
         {
+            ConnectToDatabase();
         }
          ~DBConnection()
         {
@@ -30,6 +31,10 @@ namespace NFCGenerador.Class
         {
             try
             {
+                if (conn!= null)
+                {
+                    return "Connected";
+                }
                 //conn = new SqlConnection(@"Data Source=|DataDirectory|\DBNFC.mdf;Integrated Security=True");
                 conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\DBNFC.mdf;Integrated Security=True");
                 //conn = new SqlCeConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lanti\source\repos\NFCGenerador\NFCGenerador\DBNFC.mdf;Integrated Security=True");

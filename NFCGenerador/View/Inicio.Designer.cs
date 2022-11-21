@@ -79,6 +79,7 @@
             this.DGVDetalleComprobantes.RowTemplate.Height = 25;
             this.DGVDetalleComprobantes.Size = new System.Drawing.Size(646, 300);
             this.DGVDetalleComprobantes.TabIndex = 0;
+            this.DGVDetalleComprobantes.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGVDetalleComprobantes_CellClick);
             // 
             // idColumn
             // 
