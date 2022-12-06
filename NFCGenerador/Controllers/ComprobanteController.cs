@@ -14,13 +14,19 @@ namespace NFCGenerador.Controllers
     {
         SqlConnection conn = DBConnection.conn;
 
+       
         public DataTable getAllgComprobantes()
         {
             try
             {
-                string strCommand = "SELECT * FROM comprobantes";
+                string strCommand = "SELECT c.Id, tipo, numeracionactual, numeracionfinal FROM comprobantes c INNER JOIN tipocomprobante t ON c.tipoid = t.Id";
                 DataTable dt = new DataTable();
                 SqlDataAdapter da = new SqlDataAdapter(strCommand, conn);
+
+                if (da == null)
+                {
+                    return null;
+                }
                 da.Fill(dt);
                 return dt;
             }
@@ -31,15 +37,52 @@ namespace NFCGenerador.Controllers
             }
         }
 
+        public DataTable existeComprobante(int? id)
+        {
+            try
+            {
+                string strCommand = "SELECT * FROM comprobantes where tipoid = " + id.ToString();
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter(strCommand, conn);
+                da.Fill(dt);
+
+                if (dt.Rows.Count <1 || dt ==null)
+                {
+                    return null;
+                }
+                return dt;
+
+            }
+            catch (Exception)
+            {
+               return null;
+               
+            }
+        }
+
         public void crearComprobante(Comprobantes comprobante)
         {
             try
             {
-              //  string strCommand = "insert * FROM comprobantes";
-                String query = "INSERT INTO comprobantes (tipoid,numeracionactual,numeracionfinal) VALUES (@tipoid,@numeracionactual,@numeracionfinal)";
+                string query;
+                SqlCommand command;
+                DataTable dt = existeComprobante(comprobante.tipoid);
+                if (dt != null) 
+                {
+                    query = @"UPDATE comprobantes set [numeracionfinal] = @numeracionfinal WHERE [Id] = @id " ;
+                    command = new SqlCommand(query, conn);
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = dt.Rows[0].ItemArray[0];
+                    command.Parameters.Add("@numeracionfinal", SqlDbType.Int).Value = comprobante.numeracionfinal;
+                    command.ExecuteNonQuery();
+                    return;
 
-                SqlCommand command = new SqlCommand(query, conn);
-                //command.Parameters.Add("@id", comprobante.id);
+                }
+                query = "INSERT INTO comprobantes (tipoid,numeracionactual,numeracionfinal) " +
+                    "VALUES (@tipoid,@numeracionactual,@numeracionfinal)";
+
+                command = new SqlCommand(query, conn);
+                //command.CommandText = 
+               // command.Parameters.Add("@id", comprobante.id);
                 command.Parameters.Add("@tipoid", SqlDbType.Int).Value = comprobante.tipoid;
                 command.Parameters.Add("@numeracionactual", SqlDbType.Int).Value = comprobante.numeracionactual;
                 command.Parameters.Add("@numeracionfinal", SqlDbType.Int).Value = comprobante.numeracionfinal;

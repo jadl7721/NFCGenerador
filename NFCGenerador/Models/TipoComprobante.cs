@@ -8,12 +8,12 @@ namespace NFCGenerador.Models
 {
     internal class TipoComprobante
     {
-        public int id;
+        public int? id;
         public string? tipo;
         public string? descripcion;
         public string? estado;
 
-        public TipoComprobante(int id, string? tipo, string? descripcion, string? estado)
+        public TipoComprobante(int? id, string? tipo, string? descripcion, string? estado)
         {
             this.id = id;
             this.tipo = tipo;
